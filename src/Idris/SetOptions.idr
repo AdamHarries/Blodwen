@@ -18,7 +18,7 @@ addPkgDir : {auto c : Ref Ctxt Defs} ->
             String -> Core annot ()
 addPkgDir p
     = do defs <- get Ctxt
-         addExtraDir (dir_prefix (dirs (options defs)) ++ dirSep ++ 
+         addExtraDir (dir_prefix (dirs (options defs)) ++ dirSep ++
                              "blodwen" ++ dirSep ++ p)
 
 -- Options to be processed before type checking
@@ -37,7 +37,7 @@ preOptions (SetCG e :: opts)
     = case getCG e of
            Just cg => do setCG cg
                          preOptions opts
-           Nothing => 
+           Nothing =>
               do coreLift $ putStrLn "No such code generator"
                  coreLift $ putStrLn $ "Code generators available: " ++
                                  showSep ", " (map fst availableCGs)
@@ -56,11 +56,14 @@ postOptions : {auto c : Ref Ctxt Defs} ->
               {auto m : Ref Meta (Metadata FC)} ->
               List CLOpt -> Core FC Bool
 postOptions [] = pure True
-postOptions (ExecFn str :: rest) 
+postOptions (ExecFn str :: rest)
     = do execExp (PRef (MkFC "(script)" (0, 0) (0, 0)) (UN str))
          postOptions rest
          pure False
-postOptions (CheckOnly :: rest) 
+postOptions (CheckOnly :: rest)
+    = do postOptions rest
+         pure False
+postOptions (DumpS filename :: rest) -- Todo - this bit needs to compile + save the result
     = do postOptions rest
          pure False
 postOptions (_ :: rest) = postOptions rest

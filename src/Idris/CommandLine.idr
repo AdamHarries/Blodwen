@@ -23,6 +23,7 @@ data CLOpt
   | ExecFn String
   | SetCG String
   | NoPrelude
+  | DumpS String
   | ShowPrefix
   | Version
   | Help
@@ -53,6 +54,8 @@ options = [MkOpt ["--check", "-c"] [] [CheckOnly]
               (Just "Don't implicitly import Prelude"),
            MkOpt ["--codegen", "--cg"] ["backend"] (\f => [SetCG f])
               (Just "Set code generator (default chez)"),
+           MkOpt ["--dumps", "-s"] ["filename"] (\f => [DumpS f])
+              (Just "Dump generated code to a file"),
            MkOpt ["--package", "-p"] ["package"] (\f => [PkgPath f])
               (Just "Add a package as a dependency"),
 
